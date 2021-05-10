@@ -51,4 +51,4 @@ The connection and, subsequently, the program will be terminated if the program 
 - [ ] Finalize all
 
 ### Footnote
-<a name="fn-jarfile">1</a>. You need to compile and export the code as a `jar` file first before you can execute it.
+1. <a name="fn-jarfile"></a> You need to compile and export the code as a `jar` file first before you can execute it. 
