@@ -76,14 +76,13 @@ public class Server {
 	/** Declarations **/
 	ServerSocket sock = new ServerSocket(port);
 	String line;
-	boolean flag = false;
 
-	/* Output current server instance port when successfully connected */
+	/* Output current server instance port when server is successfully started */
 	stdStream.println(PREF_INF + "Server listening at port " + port);
 
-	while (!flag) {
+	while (true) {
 
-	    /* Initial handshake to client when successfully connected */
+	    /* Initial handshake to client */
 	    Socket client = sock.accept();
 	    PrintWriter pout = new PrintWriter(client.getOutputStream(), true);
 	    pout.println(generateTimestamp());
@@ -92,11 +91,13 @@ public class Server {
 	    /* Send back to client */
 	    InputStream in = client.getInputStream();
 	    BufferedReader bin = new BufferedReader(new InputStreamReader(in));
-	    while ((line = bin.readLine()) != null && !flag) {
+	    while ((line = bin.readLine()) != null) {
 
-		/* Check if user wants to exit */
+		/** Check if user wants to exit **/
 		if (line.equals("exit")) {
 		    stdStream.println(PREF_INF + "A client has been disconnected.");
+		    pout.println(line);
+		    sock.close();
 		} else {
 
 		    /* Otherwise, relay reply to client */
@@ -117,19 +118,25 @@ public class Server {
      */
     public static void main(String[] args) {
 	int port;
-	
+
 	if (args.length != 0) {
 	    port = Integer.parseInt(args[0]);
 	} else {
 	    /** Defaults, if there no console arguments **/
 	    port = 6013;
 	}
-	
+
 	// TODO: Handle args and exceptions
 	try {
 	    listen(port);
 	} catch (IOException e) {
-	    stdStream.println(PREF_ERR + e.getMessage());
+	    if (e.getMessage().contains("closed")) {
+		stdStream.println(PREF_INF + e.getMessage() + ".");
+	    } else {
+		stdStream.println(PREF_ERR + e.getMessage() + ".");
+	    }
+	    stdStream.println(PREF_INF + "Terminating...");
 	}
+	stdStream.close();
     }
 }
