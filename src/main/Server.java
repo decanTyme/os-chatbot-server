@@ -12,7 +12,8 @@ import java.net.Socket;
 /**
  * Simple implementation of client-server communication for the server-side
  * interface. When run in the command line, it accepts one argument,
- * {@code port}. When not supplied, it will default to port {@code 6013}.
+ * {@code port}. When not supplied, it will default to port {@code 6013}. Runs
+ * indefinitely until the {@code exit} keyword is received the from client.
  * 
  * <p>
  * Example console execute: <blockquote>
@@ -33,7 +34,7 @@ import java.net.Socket;
  * <p>
  * 
  * @author Danry Ague
- * @version 2.3.6
+ * @version 2.3.7
  */
 public class Server {
 
