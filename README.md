@@ -8,7 +8,7 @@ Example console execute:
 
 <blockquote>
 <pre>
-java -jar chatbot-server.jar 5500
+java -jar chatbot-server.jar --port 5500
 </pre>
 </blockquote>
 
@@ -23,7 +23,9 @@ java -jar chatbot-server.jar
 **Note:** Needs a Java Runtime Environment installed. You may download from the [Java Official Website](https://www.java.com/en/download/).
 
 ## Definition of Terms
-`port`: The server port that is open to clients
+`port`: The server port that is open to clients (default: 6013)
+
+`exit`: Server terminate keyword
 
 ## Description
 This is a simple Java 'server' that runs in the command line where Java clients can connect to. It can only echo back any messages sent to it back to the client.
@@ -53,4 +55,4 @@ The connection and, subsequently, the program will be terminated if the program 
 - [ ] Finalize all
 
 ### Footnote
-1. <a name="fn-jarfile"></a> You need to compile and export the code as a `jar` file first before you can execute it. 
+1. <a name="fn-jarfile"></a> You need to compile and export the code as a `jar` file first before you can execute it. Or you may download a [release version](https://github.com/epcraft93/os-chatbot-server/releases).
