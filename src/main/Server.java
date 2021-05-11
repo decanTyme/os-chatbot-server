@@ -16,10 +16,14 @@ import java.net.Socket;
  * indefinitely until the {@code exit} keyword is received the from client.
  * 
  * <p>
+ * If {@code --persist} argument is present, the {@code exit} keyword is
+ * ignored.
+ * 
+ * <p>
  * Example console execute: <blockquote>
  * 
  * <pre>
- * java -jar chatbot-server.jar 5500
+ * java -jar chatbot-server.jar --port 5500
  * </pre>
  * 
  * </blockquote>
@@ -32,11 +36,14 @@ import java.net.Socket;
  * 
  * </blockquote>
  * <p>
+ * If the `--persist` argument is present, the keyword will be ignored.
  * 
  * @author Danry Ague
- * @version 2.3.7
+ * @version 2.3.8-alpha
  */
 public class Server {
+
+    static boolean persist = false;
 
     /**
      * Used to indicate/prefix error logs. Must be concatenated with the actual
@@ -54,6 +61,20 @@ public class Server {
      * Used for developer convenience.
      */
     static PrintStream stdStream = System.out;
+
+    /**
+     * Provides a delay in milliseconds. Useful for making sure that the user sees
+     * an output before it is cleared.
+     * 
+     * @param ms desired delay in milliseconds
+     */
+    static void delay(int ms) {
+	try {
+	    Thread.sleep(ms);
+	} catch (InterruptedException e) {
+	    e.printStackTrace();
+	}
+    }
 
     /**
      * Generates a timestamp to be used.
@@ -74,6 +95,7 @@ public class Server {
      * @throws IOException
      */
     static void listen(int port) throws IOException {
+	
 	/** Declarations **/
 	ServerSocket sock = new ServerSocket(port);
 	String line;
@@ -81,7 +103,7 @@ public class Server {
 	/* Output current server instance port when server is successfully started */
 	stdStream.println(PREF_INF + "Server listening at port " + port);
 
-	while (true) {
+	do {
 
 	    /* Initial handshake to client */
 	    Socket client = sock.accept();
@@ -89,7 +111,7 @@ public class Server {
 	    pout.println(generateTimestamp());
 	    stdStream.println(PREF_INF + "A client has successfully connected.");
 
-	    /* Send back to client */
+	    /* Echo back to client */
 	    InputStream in = client.getInputStream();
 	    BufferedReader bin = new BufferedReader(new InputStreamReader(in));
 	    while ((line = bin.readLine()) != null) {
@@ -98,7 +120,6 @@ public class Server {
 		if (line.equals("exit")) {
 		    stdStream.println(PREF_INF + "A client has been disconnected.");
 		    pout.println(line);
-		    sock.close();
 		} else {
 
 		    /* Otherwise, relay reply to client */
@@ -108,7 +129,10 @@ public class Server {
 
 	    }
 
-	}
+	} while (persist);
+
+	/** Properly close the connection **/
+	sock.close();
     }
 
     /**
@@ -118,18 +142,34 @@ public class Server {
      * @param args (optional) port
      */
     public static void main(String[] args) {
-	int port;
+	int port = 6013; // Default port
 
+	/** Check for arguments **/
 	if (args.length != 0) {
-	    port = Integer.parseInt(args[0]);
-	} else {
-	    /** Defaults, if there no console arguments **/
-	    port = 6013;
+	    for (int i = 0; i < args.length; i++) {
+		switch (args[i]) {
+		case "--port":
+		case "-p":
+		    try {
+			port = Integer.parseInt(args[i + 1]);
+		    } catch (NumberFormatException e) {
+			stdStream.println("Invalid port, using defaults.");
+			delay(1000);
+		    }
+		    i++;
+		    break;
+		case "--persist":
+		    persist = true;
+		    break;
+		default:
+		    stdStream.println("Unknown command: " + args[i]);
+		    i++;
+		}
+	    }
 	}
 
-	// TODO: Handle args and exceptions
 	try {
-	    listen(port);
+	    listen(port); // Start server
 	} catch (IOException e) {
 	    if (e.getMessage().contains("closed")) {
 		stdStream.println(PREF_INF + e.getMessage() + ".");
