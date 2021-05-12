@@ -16,10 +16,6 @@ import java.net.Socket;
  * indefinitely until the {@code exit} keyword is received the from client.
  * 
  * <p>
- * If {@code --persist} argument is present, the {@code exit} keyword is
- * ignored.
- * 
- * <p>
  * Example console execute: <blockquote>
  * 
  * <pre>
@@ -36,13 +32,17 @@ import java.net.Socket;
  * 
  * </blockquote>
  * <p>
- * If the `--persist` argument is present, the keyword will be ignored.
+ * If the {@code --persist} argument is present, the {@code exit} keyword will
+ * be ignored.
  * 
  * @author Danry Ague
- * @version 2.3.8-alpha
+ * @version 2.3.9-alpha
  */
 public class Server {
 
+    /**
+     * Set to true to ignore exit keyword.
+     */
     static boolean persist = false;
 
     /**
@@ -63,8 +63,8 @@ public class Server {
     static PrintStream stdStream = System.out;
 
     /**
-     * Provides a delay in milliseconds. Useful for making sure that the user sees
-     * an output before it is cleared.
+     * Provides a delay in milliseconds. Used for making sure that the user sees an
+     * output before it is cleared.
      * 
      * @param ms desired delay in milliseconds
      */
@@ -95,7 +95,7 @@ public class Server {
      * @throws IOException
      */
     static void listen(int port) throws IOException {
-	
+
 	/** Declarations **/
 	ServerSocket sock = new ServerSocket(port);
 	String line;
@@ -105,7 +105,7 @@ public class Server {
 
 	do {
 
-	    /* Initial handshake to client */
+	    /** Initial handshake to client **/
 	    Socket client = sock.accept();
 	    PrintWriter pout = new PrintWriter(client.getOutputStream(), true);
 	    pout.println(generateTimestamp());
