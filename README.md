@@ -28,7 +28,7 @@ java -jar chatbot-server.jar
 `exit`: Server terminate keyword
 
 ## Description
-This is a simple Java 'server' that runs in the command line where Java clients can connect to. It can only echo back any messages sent to it back to the client.
+This is a simple Java 'server' that runs in the command line where Java clients can connect to. It can only echo back any messages sent to it back to the client. Currently only supports one connected client at a time.
 
 ## Process Rundown
 At successful runtime, it will display the `port` where the client can connect to. If the client is forcibly disconnected without using the keyword for some unknown reason, the program will terminate and an error message will be displayed. The program will refuse to run if the `port` is already binded (used) in another server instance.
